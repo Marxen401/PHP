@@ -11,7 +11,7 @@
  *                • Commented thought process throughout
  *              Topic chosen: Book Club registration — a
  *              school-appropriate, original scenario.
- * Course:      [Your Course Name / Section]
+ * Course:      [Web Development with PHP and SQL]
  * ============================================================
  */
 
