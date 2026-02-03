@@ -1,0 +1,458 @@
+<?php
+/**
+ * ============================================================
+ * Name:        [Ethan Marxen]
+ * Date:        February 2, 2026
+ * Description: Part 1 — PHP Assignment Landing Page
+ *              This page answers two key questions:
+ *                1. Why do I need a server for my PHP pages?
+ *                2. What is the difference between GET and POST?
+ *              It also serves as the navigation hub for
+ *              Part 2 (the form and string/math functions).
+ * Course:      [Web Development with PHP and SQL]
+ * ============================================================
+ */
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PHP Assignment – Server &amp; HTTP Methods</title>
+    <style>
+        /* ============================================================
+           GLOBAL RESET & CSS VARIABLES
+           Sets up a consistent color palette and font stack
+           used across the entire page.
+           ============================================================ */
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-dark:      #0f1117;
+            --bg-card:      #1a1d27;
+            --bg-card-alt:  #222636;
+            --accent:       #6c63ff;
+            --accent-light: #8b83ff;
+            --text-primary: #eef0f4;
+            --text-muted:   #9aa0b0;
+            --border:       #2e3245;
+            --green:        #4ade80;
+            --orange:       #fb923c;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-primary);
+            line-height: 1.7;
+            min-height: 100vh;
+            padding: 40px 20px 60px;
+        }
+
+        /* ============================================================
+           LAYOUT CONTAINER
+           Centers content and limits max-width for readability.
+           ============================================================ */
+        .container {
+            max-width: 860px;
+            margin: 0 auto;
+        }
+
+        /* ============================================================
+           HEADER / HERO
+           Displays the page title and a short subtitle.
+           ============================================================ */
+        .hero {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .hero .badge {
+            display: inline-block;
+            background: var(--accent);
+            color: #fff;
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 1.8px;
+            text-transform: uppercase;
+            padding: 5px 14px;
+            border-radius: 20px;
+            margin-bottom: 18px;
+        }
+
+        .hero h1 {
+            font-size: 2.4rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 10px;
+        }
+
+        .hero h1 span {
+            color: var(--accent-light);
+        }
+
+        .hero p {
+            color: var(--text-muted);
+            font-size: 1.05rem;
+            max-width: 580px;
+            margin: 0 auto;
+        }
+
+        /* ============================================================
+           QUESTION CARDS
+           Each question lives inside a card with a colored top border.
+           ============================================================ */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 36px 34px;
+            margin-bottom: 30px;
+            border-top: 4px solid var(--accent);
+        }
+
+        .card .question-label {
+            display: inline-block;
+            background: var(--bg-card-alt);
+            color: var(--accent-light);
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 1.4px;
+            text-transform: uppercase;
+            padding: 4px 12px;
+            border-radius: 6px;
+            margin-bottom: 12px;
+        }
+
+        .card h2 {
+            font-size: 1.45rem;
+            margin-bottom: 18px;
+            color: var(--text-primary);
+        }
+
+        .card p {
+            color: var(--text-muted);
+            margin-bottom: 14px;
+            font-size: 0.97rem;
+        }
+
+        .card p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* ============================================================
+           HIGHLIGHT BOXES
+           Visually distinct blocks used for key takeaways inside cards.
+           ============================================================ */
+        .highlight {
+            background: var(--bg-card-alt);
+            border-left: 4px solid var(--accent);
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin: 18px 0;
+        }
+
+        .highlight p {
+            margin-bottom: 0 !important;
+            font-size: 0.93rem;
+        }
+
+        /* ============================================================
+           COMPARISON TABLE (GET vs POST)
+           A clean, bordered table styled to match the dark theme.
+           ============================================================ */
+        .compare-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 0.93rem;
+        }
+
+        .compare-table th {
+            background: var(--bg-card-alt);
+            color: var(--accent-light);
+            text-align: left;
+            padding: 12px 16px;
+            border-bottom: 2px solid var(--border);
+            font-weight: 600;
+            letter-spacing: 0.6px;
+        }
+
+        .compare-table td {
+            padding: 11px 16px;
+            border-bottom: 1px solid var(--border);
+            color: var(--text-muted);
+        }
+
+        .compare-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Color-coded labels inside the table */
+        .tag-get {
+            background: rgba(74, 222, 128, 0.12);
+            color: var(--green);
+            padding: 3px 10px;
+            border-radius: 5px;
+            font-weight: 600;
+            font-size: 0.82rem;
+        }
+
+        .tag-post {
+            background: rgba(251, 146, 60, 0.12);
+            color: var(--orange);
+            padding: 3px 10px;
+            border-radius: 5px;
+            font-weight: 600;
+            font-size: 0.82rem;
+        }
+
+        /* ============================================================
+           NAVIGATION LINKS (to Part 2 pages)
+           Cards at the bottom that link to the form and
+           string/math demo pages.
+           ============================================================ */
+        .nav-links {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+            margin-top: 40px;
+        }
+
+        .nav-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 26px 22px;
+            text-decoration: none;
+            transition: border-color 0.25s, transform 0.2s;
+            display: block;
+        }
+
+        .nav-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-3px);
+        }
+
+        .nav-card .nav-icon {
+            font-size: 1.7rem;
+            margin-bottom: 10px;
+        }
+
+        .nav-card h3 {
+            color: var(--text-primary);
+            font-size: 1.05rem;
+            margin-bottom: 6px;
+        }
+
+        .nav-card p {
+            color: var(--text-muted);
+            font-size: 0.84rem;
+            margin: 0;
+        }
+
+        /* ============================================================
+           FOOTER
+           Simple centered footer with author info.
+           ============================================================ */
+        .footer {
+            text-align: center;
+            margin-top: 56px;
+            color: var(--text-muted);
+            font-size: 0.82rem;
+        }
+
+        /* Responsive: stack nav cards on small screens */
+        @media (max-width: 560px) {
+            .nav-links { grid-template-columns: 1fr; }
+            .hero h1    { font-size: 1.7rem; }
+            .card       { padding: 24px 20px; }
+        }
+    </style>
+</head>
+<body>
+
+<?php
+// ============================================================
+// RENDERING BEGINS — Pure HTML output starts here.
+// PHP tags are kept minimal on this page because the content
+// is mostly static; Part 2 files use more dynamic PHP logic.
+// ============================================================
+?>
+
+<div class="container">
+
+    <!-- ============================================================
+         HERO / TITLE SECTION
+         ============================================================ -->
+    <header class="hero">
+        <div class="badge">PHP Assignment – Part 1</div>
+        <h1>Understanding <span>PHP Servers</span> &amp; HTTP Methods</h1>
+        <p>A detailed look at why PHP requires a server and how GET and POST requests differ.</p>
+    </header>
+
+    <!-- ============================================================
+         QUESTION 1 – WHY DO I NEED A SERVER FOR MY PHP PAGES?
+         ============================================================ -->
+    <div class="card">
+        <div class="question-label">Question 1</div>
+        <h2>Why Do I Need a Server for My PHP Pages?</h2>
+
+        <p>
+            PHP stands for <strong style="color: var(--accent-light);">Hypertext Preprocessor</strong>, and the key word there is
+            <em>preprocessor</em>. Unlike plain HTML or CSS, which a web browser can read and
+            render directly, PHP is a <strong style="color: var(--accent-light);">server-side scripting language</strong>. This means
+            the code must be executed (run) on a server <em>before</em> the result is ever sent
+            to the user's browser.
+        </p>
+
+        <div class="highlight">
+            <p>
+                <strong style="color: var(--accent-light);">Key Idea:</strong> A web browser understands HTML, CSS, and JavaScript — but it
+                does <em>not</em> understand PHP. A server is needed to interpret the PHP code,
+                generate the resulting HTML, and then deliver that plain HTML to the browser.
+            </p>
+        </div>
+
+        <p>
+            Here is the step-by-step flow when a user visits a PHP page:
+            First, the user types a URL (or clicks a link) in their browser and the browser
+            sends a request to the web server. Second, the web server receives the request and
+            sees that the file has a <code style="color: var(--accent-light);">.php</code> extension, so it passes the file to the PHP
+            engine (interpreter). Third, the PHP engine reads through the code, executes any
+            logic (variables, loops, database calls, and so on), and converts the output into
+            standard HTML. Fourth, the finished HTML is sent back to the browser, which
+            displays it on the screen exactly like any other webpage.
+        </p>
+
+        <p>
+            Without a server, your <code style="color: var(--accent-light);">.php</code> file would either open as raw, unprocessed
+            text or simply not display at all. That is why local development tools such as XAMPP,
+            MAMP, or WAMP install a local web server on your computer — so you can test PHP pages
+            the same way a live website would run them.
+        </p>
+
+        <p>
+            In summary, the server acts as the <strong style="color: var(--accent-light);">middleman</strong>: it runs the PHP code, builds
+            the page, and hands the finished result to the browser. The browser never sees a
+            single line of PHP — only the clean HTML the server produced.
+        </p>
+    </div>
+
+    <!-- ============================================================
+         QUESTION 2 – WHAT IS THE DIFFERENCE BETWEEN GET AND POST?
+         ============================================================ -->
+    <div class="card">
+        <div class="question-label">Question 2</div>
+        <h2>What Is the Difference Between GET and POST?</h2>
+
+        <p>
+            GET and POST are both <strong style="color: var(--accent-light);">HTTP request methods</strong> used to send data from a
+            web browser to a server. You choose one or the other when you set up an HTML form
+            (using the <code style="color: var(--accent-light);">method</code> attribute). Although they accomplish a similar goal —
+            moving data from the client to the server — they do so in very different ways and
+            are best suited for different situations.
+        </p>
+
+        <!-- Comparison table for at-a-glance differences -->
+        <table class="compare-table">
+            <thead>
+                <tr>
+                    <th>Feature</th>
+                    <th><span class="tag-get">GET</span></th>
+                    <th><span class="tag-post">POST</span></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Where data is sent</td>
+                    <td>Appended to the URL (visible in the address bar)</td>
+                    <td>Sent inside the body of the request (hidden from the URL)</td>
+                </tr>
+                <tr>
+                    <td>Visibility</td>
+                    <td>Data is fully visible to anyone who sees the URL</td>
+                    <td>Data is not shown in the browser's address bar</td>
+                </tr>
+                <tr>
+                    <td>Data limit</td>
+                    <td>Limited (roughly 2,000 characters depending on the browser)</td>
+                    <td>No practical limit — can send large amounts of data</td>
+                </tr>
+                <tr>
+                    <td>Caching</td>
+                    <td>Requests can be cached by the browser</td>
+                    <td>Requests are generally not cached</td>
+                </tr>
+                <tr>
+                    <td>Best used for</td>
+                    <td>Retrieving or searching for information</td>
+                    <td>Submitting or changing data (logins, sign-ups, purchases)</td>
+                </tr>
+                <tr>
+                    <td>Security</td>
+                    <td>Less secure — sensitive data can appear in browser history and server logs</td>
+                    <td>More secure — data is not exposed in the URL</td>
+                </tr>
+                <tr>
+                    <td>Repeated submissions</td>
+                    <td>Safe to repeat; just reloads the same data</td>
+                    <td>Browser may warn before resubmitting to prevent duplicate actions</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="highlight">
+            <p>
+                <strong style="color: var(--green);">GET Example:</strong> When you type a search query into Google, the search
+                term appears in the URL like <code style="color: var(--text-primary);">?q=your+search+term</code>.
+                That is a GET request — the data is right there in the address bar for everyone to see.
+            </p>
+        </div>
+
+        <div class="highlight" style="border-left-color: var(--orange);">
+            <p>
+                <strong style="color: var(--orange);">POST Example:</strong> When you log into a website and enter your username
+                and password, the form almost always uses POST so that your credentials are
+                not displayed in the URL and are not saved in your browser history.
+            </p>
+        </div>
+
+        <p>
+            A quick way to remember the difference: use <strong style="color: var(--green);">GET</strong> when you are
+            <em>asking for</em> information, and use <strong style="color: var(--orange);">POST</strong> when you are
+            <em>sending</em> information that could change something on the server — like
+            creating an account, placing an order, or logging in.
+        </p>
+    </div>
+
+    <!-- ============================================================
+         NAVIGATION TO PART 2 PAGES
+         ============================================================ -->
+    <div class="nav-links">
+        <a href="form.php" class="nav-card">
+            <div class="nav-icon">📝</div>
+            <h3>Part 2a – PHP Form</h3>
+            <p>Interactive form demonstrating PHP form handling with commented thought process.</p>
+        </a>
+        <a href="functions.php" class="nav-card">
+            <div class="nav-icon">⚙️</div>
+            <h3>Part 2b – String &amp; Math Functions</h3>
+            <p>Demonstrates string manipulation and math functions with live examples.</p>
+        </a>
+    </div>
+
+    <!-- ============================================================
+         FOOTER
+         ============================================================ -->
+    <div class="footer">
+        <p>[Your Name] &bull; PHP Assignment &bull; February 2026</p>
+    </div>
+</div>
+
+</body>
+</html>
