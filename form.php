@@ -1,7 +1,7 @@
 <?php
 /**
  * ============================================================
- * Name:        [Your Name]
+ * Name:        [Ethan Marxen]
  * Date:        February 2, 2026
  * Description: Part 2a – PHP Form Demo
  *              A "Book Club Sign-Up" form that demonstrates:
