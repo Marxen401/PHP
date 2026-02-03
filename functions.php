@@ -1,7 +1,7 @@
 <?php
 /**
  * ============================================================
- * Name:        [Your Name]
+ * Name:        [Ethan Marxen]
  * Date:        February 2, 2026
  * Description: Part 2b – String Manipulation & Math Functions
  *              This page demonstrates proficiency with PHP's
@@ -28,7 +28,7 @@
  *        • pi()           – returns the value of pi
  *        • ceil() / floor() – rounds up / rounds down
  *
- * Course:      [Your Course Name / Section]
+ * Course:      [Web Development with PHP and SQL]
  * ============================================================
  */
 
